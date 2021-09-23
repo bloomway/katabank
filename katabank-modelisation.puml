@@ -2,11 +2,14 @@
 'https://plantuml.com/class-diagram
 
 class Client
-class Money
+class Money {
+value: String
+}
 
 class Account {
 + deposit(date: String, amount: Money): void
 + withdraw(date: String, amount: Money): void
++ printStatement(): void
 }
 
 class Transaction {
@@ -22,12 +25,12 @@ WITHDRAW
 
 interface TransactionRepository {
 + save(transaction: Transaction): void
-+ findAll(): void
++ findAll(): Optional<List<Transaction>>
 }
 
 class InMemoryTransactionRepository {
 + save(transaction: Transaction): void
-+ findAll(): List<Transaction>
++ findAll(): Optional<List<Transaction>>
 }
 
 Client "1" -- "*" Account : uses
