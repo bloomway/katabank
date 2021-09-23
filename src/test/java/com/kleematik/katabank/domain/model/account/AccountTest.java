@@ -21,7 +21,9 @@ class AccountTest
     @BeforeEach
     public void before()
     {
-        underTest = Account.of();
+        underTest = Account.builder()
+                .transactionRepository(transactionRepositoryMock)
+                .build();
     }
 
     @AfterEach
@@ -31,13 +33,13 @@ class AccountTest
     }
 
     @Test
-    void itShouldMakeZeroTransactionToMyAccount()
+    void itShouldMakeZeroTransaction()
     {
         verifyNoMoreInteractions(transactionRepositoryMock);
     }
 
     @Test
-    void itShouldMakeOneTransactionToMyAccount()
+    void itShouldMakeOneTransaction()
     {
         underTest.deposit("05/11/2019", "200");
         // verifie que la transaction a bien eu lieu
@@ -45,7 +47,7 @@ class AccountTest
     }
 
     @Test
-    void itShouldMakeTwoTransactionToMyAccount()
+    void itShouldMakeTwoTransaction()
     {
         underTest.deposit("05/11/2019", "200");
         underTest.withdraw("15/11/2019", "150");

@@ -1,0 +1,39 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Client
+class Money
+
+class Account {
++ deposit(date: String, amount: Money): void
++ withdraw(date: String, amount: Money): void
+}
+
+class Transaction {
+type: TransactionType
+amount: Money
+date: Date
+}
+
+enum TransactionType {
+DEPOSIT
+WITHDRAW
+}
+
+interface TransactionRepository {
++ save(transaction: Transaction): void
++ findAll(): void
+}
+
+class InMemoryTransactionRepository {
++ save(transaction: Transaction): void
++ findAll(): List<Transaction>
+}
+
+Client "1" -- "*" Account : uses
+Account "*" -- "*" Transaction: has
+Account *--up TransactionRepository
+
+TransactionRepository <|-- InMemoryTransactionRepository
+
+@enduml

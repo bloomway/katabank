@@ -5,7 +5,6 @@ target/
 !**/src/test/**/target/
 
 katabank-modelisation.md
-katabank-modelisation.puml
 **/src/main/**/*.puml
 
 ### STS ###

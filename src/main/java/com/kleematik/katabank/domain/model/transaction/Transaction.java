@@ -1,15 +1,17 @@
 package com.kleematik.katabank.domain.model.transaction;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
-@RequiredArgsConstructor(staticName = "of")
+@EqualsAndHashCode
+@ToString
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@Builder
 public class Transaction
 {
     @RequiredArgsConstructor
     @Getter
-    enum Type {
+    public enum Type {
         DEPOSIT("DEPOSIT"),
         WITHDRAW("WITHDRAW");
         private final String value;
