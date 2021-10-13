@@ -1,32 +1,37 @@
 package com.kleematik.katabank.domain.model.account;
 
+import com.kleematik.katabank.application.common.DateTimeProvider;
 import com.kleematik.katabank.domain.model.transaction.Money;
 import com.kleematik.katabank.domain.model.transaction.Transaction;
 import com.kleematik.katabank.domain.repository.TransactionRepository;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 @EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class Account
-{
+public class Account {
     private static final String NEW_LINE = "\n";
 
     private final TransactionRepository transactionRepository;
+    private final DateTimeProvider dateTimeProvider;
 
-    public void deposit(String date, String amount)
+    public void deposit(String amount)
     {
-        final Transaction transaction = createTransaction(Transaction.Type.DEPOSIT, date, amount);
+        final Transaction transaction = createTransaction(Transaction.Type.DEPOSIT, amount);
         transactionRepository.save(transaction);
     }
 
-    public void withdraw(String date, String amount)
+    public void withdraw(String amount)
     {
-        final Transaction transaction = createTransaction(Transaction.Type.WITHDRAW, date, amount);
+        final Transaction transaction = createTransaction(Transaction.Type.WITHDRAW, amount);
         transactionRepository.save(transaction);
     }
 
@@ -37,12 +42,12 @@ public class Account
         printAllOperations(transactions);
     }
 
-    private Transaction createTransaction(Transaction.Type type, String date, String amount)
+    private Transaction createTransaction(Transaction.Type type, String amount)
     {
         return Transaction.builder()
                 .type(type)
+                .date(dateTimeProvider.now())
                 .amount(Money.of(amount))
-                .date(date)
                 .build();
     }
 
@@ -56,6 +61,7 @@ public class Account
                 .append(NEW_LINE);
 
         BigDecimal balance = BigDecimal.ZERO;
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
         for (var transaction : transactions)
         {
@@ -72,9 +78,15 @@ public class Account
                     break;
             }
             balance = balance.add(amount);
-            output.append(String.format(format, transaction.getType().getValue(),
-                                    transaction.getDate(),
-                                    transaction.getAmount().getValue(), balance))
+
+            output.append(
+                    String.format(format,
+                            transaction.getType().getValue(),
+                            simpleDateFormat.format(transaction.getDate()),
+                            transaction.getAmount().getValue(),
+                            balance
+                    )
+            )
                     .append(NEW_LINE);
         }
         System.out.println(output);

@@ -11,8 +11,7 @@ import java.util.Optional;
 
 @Repository
 @NoArgsConstructor(staticName = "of")
-public class InMemoryTransactionRepositoryImpl implements TransactionRepository
-{
+public class InMemoryTransactionRepositoryImpl implements TransactionRepository {
     private final List<Transaction> CACHES = new ArrayList<>();
 
     @Override
