@@ -52,26 +52,14 @@ class InMemoryTransactionRepositoryTest {
     @Test
     void itShouldHaveOneTransaction() {
         account.make(Transaction.Kind.DEPOSIT, "200");
-
         final List<Transaction> transactions = underTest.findAll().orElse(new ArrayList<>());
-
         assertEquals(1, transactions.size());
-
-        final Transaction expectedTransaction = Transaction.builder()
-                .kind(Transaction.Kind.DEPOSIT)
-                .amount(Money.of("200"))
-                .date(dateTimeProvider.now())
-                .build();
-
-        assertEquals(expectedTransaction, transactions.get(0));
     }
 
     @Test
     void itShouldBeTheSameTransaction() {
         account.make(Transaction.Kind.DEPOSIT, "200");
-
         final List<Transaction> transactions = underTest.findAll().orElse(new ArrayList<>());
-
         final Transaction expectedTransaction = Transaction.builder()
                 .kind(Transaction.Kind.DEPOSIT)
                 .amount(Money.of("200"))
@@ -84,12 +72,10 @@ class InMemoryTransactionRepositoryTest {
     @Test
     void itShouldBeNotTheSameTransaction() {
         account.make(Transaction.Kind.WITHDRAW, "200");
-
         final List<Transaction> transactions = underTest.findAll().orElse(new ArrayList<>());
-
         final Transaction expectedTransaction = Transaction.builder()
                 .kind(Transaction.Kind.DEPOSIT)
-                .amount(Money.of("200"))
+                .amount(Money.of("100"))
                 .date(dateTimeProvider.now())
                 .build();
 
@@ -99,10 +85,10 @@ class InMemoryTransactionRepositoryTest {
     @Test
     void itShouldHaveMoreTransactions() {
         account.make(Transaction.Kind.DEPOSIT, "200");
-        account.make(Transaction.Kind.WITHDRAW, "200");
-        account.make(Transaction.Kind.DEPOSIT, "200");
-        account.make(Transaction.Kind.WITHDRAW, "200");
-        account.make(Transaction.Kind.WITHDRAW, "200");
+        account.make(Transaction.Kind.WITHDRAW, "20");
+        account.make(Transaction.Kind.DEPOSIT, "100");
+        account.make(Transaction.Kind.WITHDRAW, "250");
+        account.make(Transaction.Kind.WITHDRAW, "300");
         account.make(Transaction.Kind.DEPOSIT, "200");
 
         final List<Transaction> transactions = underTest.findAll().orElse(new ArrayList<>());
