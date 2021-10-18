@@ -4,54 +4,42 @@ import com.kleematik.katabank.application.common.DateTimeProvider;
 import com.kleematik.katabank.domain.model.transaction.Money;
 import com.kleematik.katabank.domain.model.transaction.Transaction;
 import com.kleematik.katabank.domain.repository.TransactionRepository;
+import com.kleematik.katabank.domain.services.print.PrintStatement;
 import lombok.AccessLevel;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-@EqualsAndHashCode
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
 public class Account {
-    private static final String NEW_LINE = "\n";
 
     private final TransactionRepository transactionRepository;
     private final DateTimeProvider dateTimeProvider;
+    private final PrintStatement printStatement;
 
-    public void deposit(String amount)
-    {
-        final Transaction transaction = createTransaction(Transaction.Type.DEPOSIT, amount);
-        transactionRepository.save(transaction);
-    }
+    public void make(final Transaction.Kind kind, final String amount) {
 
-    public void withdraw(String amount)
-    {
-        final Transaction transaction = createTransaction(Transaction.Type.WITHDRAW, amount);
+        final Transaction transaction = Transaction.builder()
+                .kind(kind)
+                .date(dateTimeProvider.now())
+                .amount(Money.of(amount))
+                .build();
+
         transactionRepository.save(transaction);
     }
 
     public void printStatement()
     {
-        final var transactions = transactionRepository.findAll()
+        final List<Transaction> transactions = transactionRepository.findAll()
                 .orElse(new ArrayList<>());
-        printAllOperations(transactions);
+        printStatement.print(transactions);
     }
 
-    private Transaction createTransaction(Transaction.Type type, String amount)
-    {
-        return Transaction.builder()
-                .type(type)
-                .date(dateTimeProvider.now())
-                .amount(Money.of(amount))
-                .build();
-    }
 
-    private void printAllOperations(List<Transaction> transactions)
+    /*private void printAllOperations(List<Transaction> transactions)
     {
         final String format = "%1$-10s | %2$-10s | %3$-10s | %4$-10s";
         final StringBuilder output = new StringBuilder()
@@ -66,7 +54,7 @@ public class Account {
         for (var transaction : transactions)
         {
             BigDecimal amount = BigDecimal.ZERO;
-            switch (transaction.getType())
+            switch (transaction.getKind())
             {
                 case DEPOSIT:
                     amount = new BigDecimal(transaction.getAmount().getValue());
@@ -81,7 +69,7 @@ public class Account {
 
             output.append(
                     String.format(format,
-                            transaction.getType().getValue(),
+                            transaction.getKind().getValue(),
                             simpleDateFormat.format(transaction.getDate()),
                             transaction.getAmount().getValue(),
                             balance
@@ -90,5 +78,5 @@ public class Account {
                     .append(NEW_LINE);
         }
         System.out.println(output);
-    }
+    }*/
 }

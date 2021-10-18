@@ -1,27 +1,39 @@
 package com.kleematik.katabank.domain.model.transaction;
 
-import com.kleematik.katabank.application.common.DateTimeProvider;
 import lombok.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.Objects;
 
-@EqualsAndHashCode
 @ToString
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 @Builder
-public class Transaction {
+public final class Transaction {
     @RequiredArgsConstructor
     @Getter
-    public enum Type {
+    public enum Kind {
         DEPOSIT("DEPOSIT"),
         WITHDRAW("WITHDRAW");
         private final String value;
     }
 
-    private final Transaction.Type type;
+    private final Kind kind;
     private final Money amount;
-    private final Date date;
+    private final String date;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Transaction that = (Transaction) o;
+        return kind == that.kind &&
+                Objects.equals(amount, that.amount) &&
+                Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kind, amount, date);
+    }
 }

@@ -1,18 +1,28 @@
-package com.kleematik.katabank.infra.data.persistence.inmemory;
+package com.kleematik.katabank.infra.data.repository.inmemory;
 
 import com.kleematik.katabank.domain.model.transaction.Transaction;
 import com.kleematik.katabank.domain.repository.TransactionRepository;
+import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-@NoArgsConstructor(staticName = "of")
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class InMemoryTransactionRepositoryImpl implements TransactionRepository {
+
     private final List<Transaction> CACHES = new ArrayList<>();
+
+    // used for production
+    public static InMemoryTransactionRepositoryImpl getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    // used for tests only
+    public static InMemoryTransactionRepositoryImpl of() {
+        return new InMemoryTransactionRepositoryImpl();
+    }
 
     @Override
     public void save(Transaction transaction)
@@ -24,5 +34,9 @@ public class InMemoryTransactionRepositoryImpl implements TransactionRepository 
     public Optional<List<Transaction>> findAll()
     {
         return Optional.of(new ArrayList<>(CACHES));
+    }
+
+    private static class Holder {
+        public static final InMemoryTransactionRepositoryImpl INSTANCE = new InMemoryTransactionRepositoryImpl();
     }
 }
