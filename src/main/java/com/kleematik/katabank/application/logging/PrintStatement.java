@@ -1,4 +1,4 @@
-package com.kleematik.katabank.domain.services.print;
+package com.kleematik.katabank.application.logging;
 
 import com.kleematik.katabank.domain.model.transaction.Transaction;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,5 @@ public abstract class PrintStatement {
         writer.flush();
         writer.close();
     }
-
     protected abstract String concat(List<Transaction> transactions);
 }

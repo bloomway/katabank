@@ -1,11 +1,10 @@
 package com.kleematik.katabank.domain.model.account;
 
-import com.kleematik.katabank.application.common.DateTimeProvider;
 import com.kleematik.katabank.domain.model.transaction.Transaction;
+import com.kleematik.katabank.domain.model.transaction.TransactionType;
 import com.kleematik.katabank.domain.repository.TransactionRepository;
-import com.kleematik.katabank.domain.services.print.ConsolePrintStatement;
-import com.kleematik.katabank.domain.services.print.PrintStatement;
-import com.kleematik.katabank.infra.datetime.SystemDateTimeProviderImpl;
+import com.kleematik.katabank.infra.logging.ConsolePrintStatement;
+import com.kleematik.katabank.application.logging.PrintStatement;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,14 +26,10 @@ class AccountTest {
 
     @BeforeEach
     public void before() {
-        final DateTimeProvider dateTimeProvider = SystemDateTimeProviderImpl.getInstance();
         final PrintStatement printStatement = ConsolePrintStatement.getInstance();
-
-        //transactionRepositoryMock = Mockito.mock(TransactionRepository.class);
 
         underTest = Account.builder()
                 .transactionRepository(transactionRepositoryMock)
-                .dateTimeProvider(dateTimeProvider)
                 .printStatement(printStatement)
                 .build();
     }
@@ -51,16 +46,14 @@ class AccountTest {
 
     @Test
     void itShouldMakeOneTransaction() {
-        underTest.make(Transaction.Kind.DEPOSIT, "200");
-        // verifie que la transaction a bien eu lieu
+        underTest.make(TransactionType.DEPOSIT, "200");
         verify(transactionRepositoryMock).save(any(Transaction.class));
     }
 
     @Test
     void itShouldMakeTwoTransaction() {
-        underTest.make(Transaction.Kind.DEPOSIT, "200");
-        underTest.make(Transaction.Kind.WITHDRAW, "200");
-        // verifie que la transaction a bien eu lieu
+        underTest.make(TransactionType.DEPOSIT, "200");
+        underTest.make(TransactionType.WITHDRAW, "200");
         verify(transactionRepositoryMock, times(2)).save(any(Transaction.class));
     }
 }
