@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class InMemoryTransactionRepositoryImpl implements TransactionRepository {
@@ -31,9 +30,8 @@ public class InMemoryTransactionRepositoryImpl implements TransactionRepository 
     }
 
     @Override
-    public Optional<List<Transaction>> findAll()
-    {
-        return Optional.of(new ArrayList<>(CACHES));
+    public List<Transaction> findAll() {
+        return !CACHES.isEmpty() ? new ArrayList<>(CACHES) : new ArrayList<>();
     }
 
     private static class Holder {

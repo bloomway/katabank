@@ -1,6 +1,7 @@
-package com.kleematik.katabank.domain.services.print;
+package com.kleematik.katabank.infra.logging;
 
 import com.kleematik.katabank.domain.model.transaction.Transaction;
+import com.kleematik.katabank.application.logging.PrintStatement;
 
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -40,7 +41,7 @@ public final class ConsolePrintStatement extends PrintStatement {
 
             BigDecimal amount = BigDecimal.ZERO;
 
-            switch (transaction.getKind()) {
+            switch (transaction.getTransactionType()) {
                 case DEPOSIT:
                     amount = new BigDecimal(transaction.getAmount().getValue());
                     break;
@@ -55,7 +56,7 @@ public final class ConsolePrintStatement extends PrintStatement {
 
             output.append(
                     String.format(FORMAT,
-                            transaction.getKind().getValue(),
+                            transaction.getTransactionType().getValue(),
                             transaction.getDate(),
                             transaction.getAmount().getValue(),
                             balance
