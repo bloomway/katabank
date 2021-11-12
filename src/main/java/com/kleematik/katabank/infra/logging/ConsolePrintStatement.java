@@ -13,10 +13,7 @@ public final class ConsolePrintStatement extends PrintStatement {
     private static final String FORMAT= "%1$-10s | %2$-10s | %3$-10s | %4$-10s";
 
     private final StringBuilder output;
-
-    private static class Holder {
-        private static final ConsolePrintStatement INSTANCE = new ConsolePrintStatement();
-    }
+    private BigDecimal balance = BigDecimal.ZERO;
 
     private ConsolePrintStatement() {
         super(new PrintWriter(System.out));
@@ -32,37 +29,42 @@ public final class ConsolePrintStatement extends PrintStatement {
         return Holder.INSTANCE;
     }
 
-    @Override
-    public String concat(final List<Transaction> transactions) {
+    private static class Holder {
+        private static final ConsolePrintStatement INSTANCE = new ConsolePrintStatement();
+    }
 
-        BigDecimal balance = BigDecimal.ZERO;
+    @Override
+    public String concatenate(final List<Transaction> transactions) {
 
         for (Transaction transaction : transactions) {
-
-            BigDecimal amount = BigDecimal.ZERO;
-
-            switch (transaction.getTransactionType()) {
-                case DEPOSIT:
-                    amount = new BigDecimal(transaction.getAmount().getValue());
-                    break;
-                case WITHDRAW:
-                    amount = new BigDecimal(transaction.getAmount().getValue()).negate();
-                    break;
-                default:
-                    break;
-            }
-
-            balance = balance.add(amount);
-
-            output.append(
-                    String.format(FORMAT,
-                            transaction.getTransactionType().getValue(),
-                            transaction.getDate(),
-                            transaction.getAmount().getValue(),
-                            balance
-                    )
-            ).append(NEW_LINE);
+            calculateCurrentBalance(transaction);
+            write(transaction);
         }
         return output.toString();
+    }
+
+    private void calculateCurrentBalance(Transaction transaction) {
+        BigDecimal amount = BigDecimal.ZERO;
+        switch (transaction.getTransactionType()) {
+            case DEPOSIT:
+                amount = new BigDecimal(transaction.getAmount().getValue());
+                break;
+            case WITHDRAW:
+                amount = new BigDecimal(transaction.getAmount().getValue()).negate();
+                break;
+            default:
+                break;
+        }
+        balance = balance.add(amount);
+    }
+
+    private void write(Transaction transaction) {
+        final var content = String.format(FORMAT,
+                transaction.getTransactionType().getValue(),
+                transaction.getDate(),
+                transaction.getAmount().getValue(),
+                balance
+        );
+        output.append(content).append(NEW_LINE);
     }
 }

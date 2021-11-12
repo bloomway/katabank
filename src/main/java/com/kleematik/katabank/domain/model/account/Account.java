@@ -10,7 +10,6 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
@@ -20,18 +19,20 @@ public class Account {
     private final PrintStatement printStatement;
 
     public void make(final TransactionType transactionType, final String amount) {
-
-        final Transaction transaction = Transaction.builder()
-                .transactionType(transactionType)
-                .date(LocalDateTime.now())
-                .amount(Money.of(amount))
-                .build();
-
+        final Transaction transaction = createTransaction(transactionType, amount);
         transactionRepository.save(transaction);
     }
 
     public void printStatement() {
-        final List<Transaction> transactions = transactionRepository.findAll();
+        final var transactions = transactionRepository.findAll();
         printStatement.print(transactions);
+    }
+
+    private Transaction createTransaction(TransactionType transactionType, String amount) {
+        return Transaction.builder()
+                .transactionType(transactionType)
+                .date(LocalDateTime.now())
+                .amount(Money.of(amount))
+                .build();
     }
 }

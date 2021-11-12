@@ -12,10 +12,11 @@ public abstract class PrintStatement {
     private final PrintWriter writer;
 
     public void print(final List<Transaction> transactions) {
-        final String output = concat(transactions);
+        final String output = concatenate(transactions);
         writer.write(output);
         writer.flush();
         writer.close();
     }
-    protected abstract String concat(List<Transaction> transactions);
+
+    protected abstract String concatenate(List<Transaction> transactions);
 }
