@@ -1,14 +1,19 @@
 package com.kleematik.katabank.domain.model.transaction;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 @EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor(staticName = "of")
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public final class Money {
-    private final String value;
+
+    private BigDecimal value;
+
+    public static Money of(String value) {
+        return new Money(new BigDecimal(value));
+    }
 }
