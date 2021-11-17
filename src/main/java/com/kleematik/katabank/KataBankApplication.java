@@ -15,21 +15,21 @@ public class KataBankApplication {
 		final Account account = Factory.createAccount(repository, printStatement);
 
 		account.make(TransactionType.DEPOSIT, "200");
-		Thread.sleep(4000);
-
-		account.make(TransactionType.WITHDRAW, "200");
 		Thread.sleep(2000);
 
 		account.make(TransactionType.WITHDRAW, "150");
-		Thread.sleep(3000);
-
-		account.make(TransactionType.DEPOSIT, "200");
-		Thread.sleep(1000);
-
-		account.make(TransactionType.WITHDRAW, "300");
 		Thread.sleep(2000);
 
-		account.make(TransactionType.WITHDRAW, "150");
+		account.make(TransactionType.WITHDRAW, "149.99");
+		Thread.sleep(2000);
+
+		account.make(TransactionType.DEPOSIT, "199.99");
+		Thread.sleep(2000);
+
+		account.make(TransactionType.WITHDRAW, "299.99");
+		Thread.sleep(2000);
+
+		account.make(TransactionType.WITHDRAW, "149.99");
 
 		account.printStatement();
 	}

@@ -32,7 +32,7 @@ public class Account {
         return Transaction.builder()
                 .transactionType(transactionType)
                 .date(LocalDateTime.now())
-                .amount(Money.of(amount))
+                .money(Money.of(amount))
                 .build();
     }
 }

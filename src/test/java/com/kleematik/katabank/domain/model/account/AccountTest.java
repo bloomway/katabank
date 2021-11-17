@@ -46,14 +46,14 @@ class AccountTest {
 
     @Test
     void itShouldMakeOneTransaction() {
-        underTest.make(TransactionType.DEPOSIT, "200");
+        underTest.make(TransactionType.DEPOSIT, "200.0");
         verify(transactionRepositoryMock).save(any(Transaction.class));
     }
 
     @Test
     void itShouldMakeTwoTransaction() {
-        underTest.make(TransactionType.DEPOSIT, "200");
-        underTest.make(TransactionType.WITHDRAW, "200");
+        underTest.make(TransactionType.DEPOSIT, "200.0");
+        underTest.make(TransactionType.WITHDRAW, "200.0");
         verify(transactionRepositoryMock, times(2)).save(any(Transaction.class));
     }
 }

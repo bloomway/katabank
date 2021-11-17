@@ -35,34 +35,23 @@ public final class ConsolePrintStatement extends PrintStatement {
 
     @Override
     public String concatenate(final List<Transaction> transactions) {
-
-        for (Transaction transaction : transactions) {
+        transactions.forEach(transaction -> {
             calculateCurrentBalance(transaction);
             write(transaction);
-        }
+        });
         return output.toString();
     }
 
     private void calculateCurrentBalance(Transaction transaction) {
-        BigDecimal amount = BigDecimal.ZERO;
-        switch (transaction.getTransactionType()) {
-            case DEPOSIT:
-                amount = new BigDecimal(transaction.getAmount().getValue());
-                break;
-            case WITHDRAW:
-                amount = new BigDecimal(transaction.getAmount().getValue()).negate();
-                break;
-            default:
-                break;
-        }
+        BigDecimal amount = transaction.getMoneyValue();
         balance = balance.add(amount);
     }
 
     private void write(Transaction transaction) {
         final var content = String.format(FORMAT,
-                transaction.getTransactionType().getValue(),
+                transaction.getTransactionTypeValue(),
                 transaction.getDate(),
-                transaction.getAmount().getValue(),
+                transaction.getMoneyValue(),
                 balance
         );
         output.append(content).append(NEW_LINE);
