@@ -7,13 +7,20 @@ import java.time.LocalDateTime;
 
 @EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@Builder
+@Builder(access = AccessLevel.PRIVATE)
 public final class Transaction {
     private final TransactionType transactionType;
     private final Money money;
     private final LocalDateTime date;
+
+    public static Transaction of(String amount, TransactionType transactionType) {
+        return Transaction.builder()
+                .transactionType(transactionType)
+                .date(LocalDateTime.now())
+                .money(Money.of(amount))
+                .build();
+    }
 
     public BigDecimal getMoneyValue() {
         switch (transactionType) {
